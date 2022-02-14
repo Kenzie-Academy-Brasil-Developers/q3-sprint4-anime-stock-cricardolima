@@ -24,7 +24,7 @@ class DatabaseConnector():
     def create_table(cls):
         cls.get_conn_cur()
         query = """
-            CREATE TABLE IF NOT EXISTS anime(
+            CREATE TABLE IF NOT EXISTS animes(
                 id BIGSERIAL PRIMARY KEY,
                 anime VARCHAR(100) NOT NULL UNIQUE,
                 released_date DATE NOT NULL,

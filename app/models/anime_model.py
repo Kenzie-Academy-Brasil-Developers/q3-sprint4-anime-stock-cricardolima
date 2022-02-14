@@ -1,12 +1,28 @@
 from app.models import DatabaseConnector
 
 class Anime(DatabaseConnector):
-    anime_keys = ["anime", "released_date", "seasons"]
+    anime_keys = ["id", "anime", "released_date", "seasons"]
     
     def __init__(self, *args, **kwargs):
-        self.anime = kwargs['anime']
+        self.anime = kwargs['anime'].title()
         self.released_date = kwargs['released_date']
         self.seasons = kwargs['seasons']
+    
+    def create_anime(self):
+        self.create_table()
+        self.get_conn_cur()
+        query = """
+            INSERT INTO 
+                animes(anime, released_date, seasons)
+            VALUES
+                (%s, %s, %s)
+            RETURNING *
+        """
+        query_values = list(self.__dict__.values())
+        self.cur.execute(query, query_values)
+        inserted_anime = self.cur.fetchone()
+        self.commit_and_close()
+        return inserted_anime
         
     @staticmethod
     def serialize_anime(data, keys=anime_keys):
